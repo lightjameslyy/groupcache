@@ -26,9 +26,13 @@ import (
 type Hash func(data []byte) uint32
 
 type Map struct {
+	// hash函数
 	hash     Hash
+	// ring hash算法中虚拟节点的个数
 	replicas int
+	// 所有虚拟节点对应的hash值
 	keys     []int // Sorted
+	// 存储hash值和真实节点名字的映射
 	hashMap  map[int]string
 }
 

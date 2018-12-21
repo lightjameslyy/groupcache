@@ -22,7 +22,9 @@ import "sync"
 
 // call is an in-flight or completed Do call
 type call struct {
+	// 用来等待对应的函数执行完
 	wg  sync.WaitGroup
+	// val和err是要调用的函数的返回值
 	val interface{}
 	err error
 }
@@ -43,11 +45,13 @@ func (g *Group) Do(key string, fn func() (interface{}, error)) (interface{}, err
 	if g.m == nil {
 		g.m = make(map[string]*call)
 	}
+	// 如果key对应的call已经在处理，处理完后返回对应的结果就可以了
 	if c, ok := g.m[key]; ok {
 		g.mu.Unlock()
 		c.wg.Wait()
 		return c.val, c.err
 	}
+	// 如果不存在对应的call，创建一个，并添加到g.m中，供后续调用使用
 	c := new(call)
 	c.wg.Add(1)
 	g.m[key] = c

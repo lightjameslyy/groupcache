@@ -49,6 +49,7 @@ func TestGet(t *testing.T) {
 	for _, tt := range getTests {
 		lru := New(0)
 		lru.Add(tt.keyToAdd, 1234)
+		fmt.Println(lru)
 		val, ok := lru.Get(tt.keyToGet)
 		if ok != tt.expectedOk {
 			t.Fatalf("%s: cache hit = %v; want %v", tt.name, ok, !ok)
@@ -61,6 +62,7 @@ func TestGet(t *testing.T) {
 func TestRemove(t *testing.T) {
 	lru := New(0)
 	lru.Add("myKey", 1234)
+	fmt.Println(lru)
 	if val, ok := lru.Get("myKey"); !ok {
 		t.Fatal("TestRemove returned no match")
 	} else if val != 1234 {
@@ -68,6 +70,7 @@ func TestRemove(t *testing.T) {
 	}
 
 	lru.Remove("myKey")
+	fmt.Println(lru)
 	if _, ok := lru.Get("myKey"); ok {
 		t.Fatal("TestRemove returned a removed entry")
 	}
@@ -84,6 +87,8 @@ func TestEvict(t *testing.T) {
 	for i := 0; i < 22; i++ {
 		lru.Add(fmt.Sprintf("myKey%d", i), 1234)
 	}
+	fmt.Println(lru)
+	fmt.Println(evictedKeys)
 
 	if len(evictedKeys) != 2 {
 		t.Fatalf("got %d evicted keys; want 2", len(evictedKeys))
